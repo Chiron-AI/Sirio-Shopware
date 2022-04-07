@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Sirio Settings</title>
+        <title lang="it-IT">Sirio Settings</title>
+        <input-field type="bool">
+            <name>Enable</name>
+        </input-field>
+        <input-field type="bool">
+            <name>Debug Enable</name>
+        </input-field>
+        <input-field type="bool">
+            <name>Enable DEV Mode</name>
+        </input-field>
+    </card>
+    <card>
+        <title>Cookie consent configuration</title>
+        <title lang="de-DE">Cookie Consent Konfiguration</title>
+
+        <input-field type="bool">
+            <name>hasSWConsentSupport</name>
+            <defaultValue>true</defaultValue>
+            <label>Shopware Cookie consent support</label>
+            <label lang="de-DE">Shopware Cookie Consent Unterstützung</label>
+            <helpText>Activate for integration into Shopware consent manager. Deactivate this, if you plan to use external cookie consent manager</helpText>
+            <helpText lang="de-DE">Deaktivieren, wenn Sie einen externen Cookie Consent Manager benutzen möchten</helpText>
+        </input-field>
+    </card>
+
+</config>
