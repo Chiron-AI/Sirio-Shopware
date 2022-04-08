@@ -1,9 +1,9 @@
 {
-    "wbmTagManager": {
+    "chironSirio": {
         "cookie": {
             "groupStatistical": "Statistik",
             "groupStatisticalDescription": "Diese Cookies werden für Statistiken und Shop Performance Metriken genutzt.",
-            "groupStatisticalTagmanager": "Google Tagmanager"
+            "groupStatisticalSirio": "Sirio"
         }
     }
 }

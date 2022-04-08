@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Wbm\TagManagerEcomm\Resources\snippet\de_DE;
+namespace Chiron\Sirio\Resources\snippet\de_DE;
 
 use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 
@@ -23,7 +23,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
 
     public function getAuthor(): string
     {
-        return 'webmatch GmbH - Sebastian Basler';
+        return 'Chiron srls';
     }
 
     public function isBase(): bool

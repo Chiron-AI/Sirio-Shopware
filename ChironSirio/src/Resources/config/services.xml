@@ -6,56 +6,29 @@
 
     <services>
 
+        <service id="Chiron\Sirio\Utility\SessionUtility" />
 
-        <service id="Wbm\TagManagerEcomm\Subscriber\StorefrontRenderSubscriber">
-            <argument type="service" id="Wbm\TagManagerEcomm\Services\DataLayerModules" />
-            <argument type="service" id="Wbm\TagManagerEcomm\Services\DataLayerRenderer" />
-            <argument type="service" id="session" />
-            <tag name="kernel.event_subscriber" />
-        </service>
-        <service id="Wbm\TagManagerEcomm\Subscriber\KernelEventsSubscriber">
-            <argument type="service" id="Wbm\TagManagerEcomm\Services\DataLayerModules" />
-            <argument type="service" id="Wbm\TagManagerEcomm\Services\DataLayerRenderer" />
-            <argument type="service" id="session" />
-            <tag name="kernel.event_subscriber" />
-        </service>
-        <service id="Wbm\TagManagerEcomm\Subscriber\CartAddPrice\AfterLineItemAddedSubscriber">
-            <argument type="service" id="session" />
-            <argument type="service" id="product.repository"/>
-            <tag name="kernel.event_subscriber" />
-        </service>
-
-        <service id="Wbm\TagManagerEcomm\Services\DataLayerModules">
-            <argument type="service" id="Doctrine\DBAL\Connection" />
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-        </service>
-        <service id="Wbm\TagManagerEcomm\Services\DataLayerRenderer">
-            <argument type="service" id="twig" />
-            <argument type="service" id="Doctrine\DBAL\Connection" />
-        </service>
-        <service id="Wbm\TagManagerEcomm\Utility\SessionUtility" />
-
-        <service id="Wbm\TagManagerEcomm\Twig\TagManagerExtension">
-            <argument type="service" id="Doctrine\DBAL\Connection" />
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
-            <argument type="service" id="Shopware\Core\Checkout\Cart\CartRuleLoader" />
+        <service id="Chiron\Sirio\Twig\SirioExtension">
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextService" />
             <argument type="service" id="request_stack" />
             <tag name="twig.extension" />
         </service>
 
-        <service id="Wbm\TagManagerEcomm\Resources\snippet\de_DE\SnippetFile_de_DE">
+        <service id="Chiron\Sirio\Resources\snippet\it_IT\SnippetFile_it_IT">
             <tag name="shopware.snippet.file" priority="100"/>
         </service>
-        <service id="Wbm\TagManagerEcomm\Resources\snippet\en_GB\SnippetFile_en_GB">
+        <service id="Chiron\Sirio\Resources\snippet\de_DE\SnippetFile_de_DE">
             <tag name="shopware.snippet.file" priority="100"/>
         </service>
-        <service id="Wbm\TagManagerEcomm\Resources\snippet\nl_NL\SnippetFile_nl_NL">
+        <service id="Chiron\Sirio\Resources\snippet\en_GB\SnippetFile_en_GB">
+            <tag name="shopware.snippet.file" priority="100"/>
+        </service>
+        <service id="Chiron\Sirio\Resources\snippet\nl_NL\SnippetFile_nl_NL">
             <tag name="shopware.snippet.file" priority="100"/>
         </service>
 
-        <service id="Wbm\TagManagerEcomm\Cookie\CustomCookieProvider" decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
-            <argument type="service" id="Wbm\TagManagerEcomm\Cookie\CustomCookieProvider.inner" />
+        <service id="Chiron\Sirio\Cookie\CustomCookieProvider" decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
+            <argument type="service" id="Chiron\Sirio\Cookie\CustomCookieProvider.inner" />
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
     </services>

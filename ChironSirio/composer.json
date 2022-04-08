@@ -2,8 +2,9 @@
     "name": "chiron/chiron-sirio",
     "version": "0.1.0",
     "description": "Chiron Sirio",
+    "keywords": ["shopware6", "shopware-6", "anomalies", "tracking", "shopware-plugin"],
     "type": "shopware-platform-plugin",
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Chiron",
@@ -16,32 +17,40 @@
     },
     "autoload": {
         "psr-4": {
-            "ChironSirio\\": "src/"
+            "Chiron\\Sirio\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ChironSirio\\Tests\\": "tests/"
+            "Chiron\\Sirio\\": "tests/"
         }
     },
     "extra": {
-        "shopware-plugin-class": "ChironSirio\\ChironSirio",
-        "copyright": "Chiron Sirio",
+        "shopware-plugin-class": "Chiron\\Sirio\\ChironSirio",
+        "copyright": "Chiron",
         "label": {
             "de-DE": "Sirio",
-            "en-GB": "Sirio"
+            "en-GB": "Sirio",
+            "nl-NL": "Sirio",
+            "it-IT": "Sirio"
         },
         "description": {
-            "de-DE": "",
-            "en-GB": ""
+            "de-DE": "Sirio ist ein fortschrittliches Überwachungssystem, das sich ideal für den E-Commerce eignet, mit Plänen, die an die Anzahl der Besucher der Website angepasst werden können. Sirio erhält eine große Datenmenge in Echtzeit und analysiert das Kundenverhalten auf der Website, indem es alle Interaktionen nachverfolgt, um mögliche Anomalien zu finden, auf die es im Trichter stoßen könnte.",
+            "en-GB": "Sirio is an advanced monitoring system ideal for E-Commerce, with plans that can be adapted according to the number of visitors to the site. Sirio receives a large amount of data in real-time and analyzes customer's behavior within the website, tracing all the interactions to find any possible anomaly that it might encounter in the funnel.",
+            "it-IT": "Sirio è un sistema di monitoraggio avanzato ideale per l'E-Commerce, con piani che possono essere adattati in base al numero di visitatori del sito. Sirio riceve una grande quantità di dati in tempo reale e analizza il comportamento del cliente all'interno del sito, tracciando tutte le interazioni per trovare ogni possibile anomalia che potrebbe incontrare nel funnel.",
+            "nl-NL": "Sirio is een geavanceerd monitoringsysteem dat ideaal is voor e-commerce, met plannen die kunnen worden aangepast aan het aantal bezoekers van de site. Sirio ontvangt in realtime een grote hoeveelheid gegevens en analyseert het gedrag van de klant binnen de website, waarbij alle interacties worden getraceerd om eventuele afwijkingen in de trechter te vinden."
         },
         "manufacturerLink": {
             "de-DE": "https://chiron.ai",
-            "en-GB": "https://chiron.ai"
+            "en-GB": "https://chiron.ai",
+            "it-IT": "https://chiron.ai",
+            "nl-NL": "https://chiron.ai"
         },
         "supportLink": {
             "de-DE": "https://sirio.chiron.ai/en/",
-            "en-GB": "https://sirio.chiron.ai/en/"
+            "en-GB": "https://sirio.chiron.ai/en/",
+            "nl-NL": "https://sirio.chiron.ai/en/",
+            "it-IT": "https://sirio.chiron.ai/"
         }
     },
     "conflict": {
