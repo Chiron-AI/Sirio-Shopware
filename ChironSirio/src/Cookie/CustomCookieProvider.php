@@ -7,20 +7,20 @@ use Shopware\Storefront\Framework\Cookie\CookieProviderInterface;
 
 class CustomCookieProvider implements CookieProviderInterface
 {
-    public const WBM_GTM_ENABLED_COOKIE_NAME = 'wbm-tagmanager-enabled';
+    public const CHIRON_SIRIO_ENABLED_COOKIE_NAME = 'wbm-tagmanager-enabled';
 
-    private const WBM_GTM_ENABLED_COOKIE_DATA = [
-        'snippet_name' => 'wbmTagManager.cookie.groupStatisticalTagmanager',
-        'cookie' => self::WBM_GTM_ENABLED_COOKIE_NAME,
+    private const CHIRON_SIRIO_ENABLED_COOKIE_DATA = [
+        'snippet_name' => 'chironSirio.cookie.groupStatisticalTagmanager',
+        'cookie' => self::CHIRON_SIRIO_ENABLED_COOKIE_NAME,
         'value' => '1',
         'expiration' => '90',
     ];
 
     private const WBM_GTM_COOKIE_GROUP_DATA = [
-        'snippet_name' => 'wbmTagManager.cookie.groupStatistical',
-        'snippet_description' => 'wbmTagManager.cookie.groupStatisticalDescription',
+        'snippet_name' => 'chironSirio.cookie.groupStatistical',
+        'snippet_description' => 'chironSirio.cookie.groupStatisticalDescription',
         'entries' => [
-            self::WBM_GTM_ENABLED_COOKIE_DATA,
+            self::CHIRON_SIRIO_ENABLED_COOKIE_DATA,
         ],
     ];
 

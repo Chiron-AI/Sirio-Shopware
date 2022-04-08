@@ -1,13 +1,13 @@
 {
-    "name": "swag/swag-extension-store",
-    "version": "1.5.0",
-    "description": "SWAG Extension Store",
+    "name": "chiron/chiron-sirio",
+    "version": "0.1.0",
+    "description": "Chiron Sirio",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
         {
-            "name": "shopware AG",
-            "homepage": "https://shopware.com"
+            "name": "Chiron",
+            "homepage": "https://chiron.ai"
         }
     ],
     "require": {
@@ -26,22 +26,22 @@
     },
     "extra": {
         "shopware-plugin-class": "ChironSirio\\ChironSirio",
-        "copyright": "shopware AG",
+        "copyright": "Chiron Sirio",
         "label": {
-            "de-DE": "Shopware Store",
-            "en-GB": "Shopware Store"
+            "de-DE": "Sirio",
+            "en-GB": "Sirio"
         },
         "description": {
-            "de-DE": "Entdecken und kaufen Sie Erweiterungen ganz einfach, direkt in Ihrem eigenen Shopware-Shop. Erhalten Sie Zugang zu vielen Erweiterungen, die Sie in Ihren Shop integrieren können.",
-            "en-GB": "Explore and buy extensions easily, right from within your own Shopware shop. Get access to loads of helpful Extensions and modern Themes that can be integrated into your shop."
+            "de-DE": "",
+            "en-GB": ""
         },
         "manufacturerLink": {
-            "de-DE": "https://www.shopware.com/en/",
-            "en-GB": "https://www.shopware.com/en/"
+            "de-DE": "https://chiron.ai",
+            "en-GB": "https://chiron.ai"
         },
         "supportLink": {
-            "de-DE": "https://www.shopware.com/en/",
-            "en-GB": "https://www.shopware.com/en/"
+            "de-DE": "https://sirio.chiron.ai/en/",
+            "en-GB": "https://sirio.chiron.ai/en/"
         }
     },
     "conflict": {
