@@ -2,7 +2,9 @@
     "chironSirio": {
         "cookie": {
             "groupStatistical": "Statistics",
+
             "groupStatisticalDescription": "Questi cookie vengono utilizzati per statistiche e misure delle prestazioni dello shop.",
+
             "groupStatisticalSirio": "Sirio"
         }
     }
