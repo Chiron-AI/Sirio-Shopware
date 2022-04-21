@@ -1,26 +1,26 @@
 <?php declare(strict_types=1);
 
-namespace Wbm\TagManagerEcomm\Cookie;
+namespace Chiron\Sirio\Cookie;
 
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Framework\Cookie\CookieProviderInterface;
 
 class CustomCookieProvider implements CookieProviderInterface
 {
-    public const WBM_GTM_ENABLED_COOKIE_NAME = 'wbm-tagmanager-enabled';
+    public const CHIRON_SIRIO_ENABLED_COOKIE_NAME = 'sirio_cart';
 
-    private const WBM_GTM_ENABLED_COOKIE_DATA = [
-        'snippet_name' => 'wbmTagManager.cookie.groupStatisticalTagmanager',
-        'cookie' => self::WBM_GTM_ENABLED_COOKIE_NAME,
+    private const CHIRON_SIRIO_ENABLED_COOKIE_DATA = [
+        'snippet_name' => 'chironSirio.cookie.groupStatisticalSirio',
+        'cookie' => self::CHIRON_SIRIO_ENABLED_COOKIE_NAME,
         'value' => '1',
         'expiration' => '90',
     ];
 
-    private const WBM_GTM_COOKIE_GROUP_DATA = [
-        'snippet_name' => 'wbmTagManager.cookie.groupStatistical',
-        'snippet_description' => 'wbmTagManager.cookie.groupStatisticalDescription',
+    private const CHIRON_SIRIO_COOKIE_GROUP_DATA = [
+        'snippet_name' => 'chironSirio.cookie.groupStatistical',
+        'snippet_description' => 'chironSirio.cookie.groupStatisticalDescription',
         'entries' => [
-            self::WBM_GTM_ENABLED_COOKIE_DATA,
+            self::CHIRON_SIRIO_ENABLED_COOKIE_DATA,
         ],
     ];
 
@@ -44,7 +44,7 @@ class CustomCookieProvider implements CookieProviderInterface
 
     public function getCookieGroups(): array
     {
-        if (!$this->systemConfigService->get('WbmTagManagerEcomm.config.hasSWConsentSupport')) {
+        if (!$this->systemConfigService->get('chironSirio.config.hasSWConsentSupport')) {
             return $this->originalService->getCookieGroups();
         }
 
@@ -60,11 +60,11 @@ class CustomCookieProvider implements CookieProviderInterface
                 continue;
             }
 
-            $group['entries'] = array_merge($group['entries'], [self::WBM_GTM_ENABLED_COOKIE_DATA]);
+            $group['entries'] = array_merge($group['entries'], [self::CHIRON_SIRIO_ENABLED_COOKIE_DATA]);
 
             return $cookieGroups;
         }
 
-        return array_merge($cookieGroups, [self::WBM_GTM_COOKIE_GROUP_DATA]);
+        return array_merge($cookieGroups, [self::CHIRON_SIRIO_COOKIE_GROUP_DATA]);
     }
 }
