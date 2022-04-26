@@ -8,7 +8,6 @@
         {% if sirioProfiling %}
             {{ sirioProfiling|raw }}
         {% endif %}
-        {% if chironSirioConfig.isActive %}<script src="{{ chironSirioConfig.sirioUrl }}/api/v1/profiling" async type="text/javascript"></script>{% endif %}
         <!-- ChironSirio Head Snippet End -->
 
     {% endblock %}

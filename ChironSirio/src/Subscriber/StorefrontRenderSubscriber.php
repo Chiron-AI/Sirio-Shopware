@@ -5,7 +5,6 @@ namespace Chiron\Sirio\Subscriber;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Chiron\Sirio\Cookie\CustomCookieProvider;
 use Chiron\Sirio\Services\SirioProfilingModules;
 use Chiron\Sirio\Services\SirioProfilingRenderer;
 use Chiron\Sirio\Utility\SessionUtility;
@@ -67,9 +66,7 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
                 'chironSirioConfig',
                 [   
                     'sirioUrl' => $this->modules->getSirioUrl($salesChannelId),
-                    'isActive' => $isActive,
-                    'sirioCookieEnabledName' => CustomCookieProvider::CHIRON_SIRIO_ENABLED_COOKIE_NAME,
-                    'hasSWConsentSupport' => $this->modules->hasSWConsentSupport($salesChannelId)
+                    'isActive' => $isActive
                 ]
             );
             

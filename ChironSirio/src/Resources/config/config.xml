@@ -5,35 +5,32 @@
     <card>
         <title>Sirio Settings</title>
         <title lang="it-IT">Impostazioni Sirio</title>
+        <title lang="de-DE">Sirio Einstellungen</title>
+        <title lang="en-GB">Sirio Settings</title>
+        <title lang="nl-NL">Sirio instellingen</title>
         <input-field type="bool">
             <name>enable</name>
             <label>Enable Sirio</label>
             <label lang="it-IT">Abilita Sirio</label>
+            <label lang="en-GB">Enable Sirio</label>
+            <label lang="de-DE">Sirio Aktivieren</label>
+            <label lang="nl-NL">Sirio Inschakelen</label>
         </input-field>
         <input-field type="bool">
             <name>debugEnable</name>
             <label>Enable Debug</label>
             <label lang="it-IT">Abilita Debug</label>
+            <label lang="en-GB">Enable Debug</label>
+            <label lang="de-DE">Aktivieren Debug</label>
+            <label lang="nl-NL">Inschakelen Debug</label>
         </input-field>
         <input-field type="bool">
             <name>enableDevMode</name>
             <label>Enable DEV Mode</label>
             <label lang="it-IT">Abilita modalità sviluppo</label>
+            <label lang="en-GB">Enable DEV Mode</label>
+            <label lang="de-DE">Aktivieren DEV-Modus</label>
+            <label lang="nl-NL">DEV-modus Inschakelen</label>
         </input-field>
     </card>
-    <card>
-        <title>Cookie consent configuration</title>
-        <title lang="de-DE">Cookie Consent Konfiguration</title>
-        <input-field type="bool">
-            <name>hasSWConsentSupport</name>
-            <defaultValue>true</defaultValue>
-            <label>Shopware Cookie consent support</label>
-            <label lang="it-IT">Shopware Supporto per il consenso ai cookie</label>
-            <label lang="de-DE">Shopware Cookie Consent Unterstützung</label>
-            <helpText>Activate for integration into Shopware consent manager. Deactivate this, if you plan to use external cookie consent manager</helpText>
-            <helpText lang="de-DE">Deaktivieren, wenn Sie einen externen Cookie Consent Manager benutzen möchten</helpText>
-            <helpText lang="it-IT">Attiva per l'integrazione in Gestione consensi Shopware. Disattivalo, se prevedi di utilizzare un gestore esterno del consenso ai cookie</helpText>
-        </input-field>
-    </card>
-
 </config>

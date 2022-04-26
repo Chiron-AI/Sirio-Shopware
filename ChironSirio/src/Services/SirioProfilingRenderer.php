@@ -128,7 +128,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         else if ($route == 'frontend.checkout.finish.page') {
 			$this->appendCheckoutSuccessJS($route);
 		}
-        else if ($route == 'frontend.checkout.cart.page' || strstr($route, 'frontend.checkout') === true) {
+        else if (stristr($route, 'frontend.checkout')) {
 			$this->appendCheckoutJS($route);
 		}
 		else{
@@ -304,14 +304,6 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $salesChannelContext = $this->getSalesChannelContext();
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
         return $cart;
-        
-        if ($lineItem && $lineItem->getId() === $uuid) {
-            if ($returnQuantity) {
-                return (float) $lineItem->getQuantity();
-            }
-
-            return ($lineItem->getPrice() !== null) ? $lineItem->getPrice()->getUnitPrice() : 0;
-        }
     }
 
 
