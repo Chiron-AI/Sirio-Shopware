@@ -181,7 +181,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
             ->getCategory();
         $image = "";
         if($current_category->getMedia() != null){
-            $image = $current_category->getMedia()->first()->getMedia()->getUrl();
+            $image = $current_category->getMedia()->getUrl();
         }    
 		$limit = 24;//
 		$page = $this->getParam('p')?$this->getParam('p'):1;
