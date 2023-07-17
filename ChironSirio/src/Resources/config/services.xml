@@ -45,7 +45,7 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="Shopware\Core\Checkout\Cart\CartRuleLoader" />
             <argument type="service" id="Shopware\Core\Content\Category\SalesChannel\CategoryRoute" />
-            
+            <argument type="service" id="Chiron\Sirio\Services\SirioProfilingModules" />
         </service>
 
         <service id="Chiron\Sirio\Resources\snippet\it_IT\SnippetFile_it_IT">

@@ -62,6 +62,10 @@ class KernelEventsSubscriber implements EventSubscriberInterface
 
         $route = $request->attributes->get('_route');
 
+        if($route == null){
+            return;
+        }
+
         $salesChannelId = $request->get('sw-sales-channel-id');
         
         $isActive = $this->modules->isActive($salesChannelId);

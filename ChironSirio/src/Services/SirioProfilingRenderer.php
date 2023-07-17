@@ -3,6 +3,7 @@
 namespace Chiron\Sirio\Services;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Context;
 use Twig\Environment;
 use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\CartRuleLoader;
@@ -50,6 +51,11 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
     
     private LocaleProvider $localeProvider;
 
+    private $framework;
+
+    private $framework_version;
+
+    const FRAMEWORK = 'shopware';
 
     /**
      * @var array
@@ -63,7 +69,8 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         LocaleProvider $localeProvider,
         CartService $cartService,
         CartRuleLoader $cartRuleLoader,
-        AbstractCategoryRoute $cmsPageRoute
+        AbstractCategoryRoute $cmsPageRoute,
+        SirioProfilingModules $modules
     ) {
         $this->connection = $connection;
         $this->salesChannelContextService = $salesChannelContextService;
@@ -72,6 +79,14 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $this->cartService = $cartService;
         $this->cartRuleLoader = $cartRuleLoader;
         $this->cmsPageRoute = $cmsPageRoute;
+        $this->modules = $modules;
+
+        $this->framework = self::FRAMEWORK;
+
+        $context = Context::createDefaultContext();
+        $this->framework_version = $context->getVersionId();
+
+        $this->script = "sirioCustomObject = {};";
     }
 
     public function renderSirioProfiling(string $route): SirioProfilingRendererInterface
@@ -94,7 +109,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         return $this->variables[$route];
     }
 
-    public function setVariables(string $route, $variables): SirioProfilingRendererInterface
+    public function setVariables($route, $variables): SirioProfilingRendererInterface
     {
         $this->variables[$route] = $variables;
 
@@ -109,9 +124,11 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
     public function getSirioEvent($route) {
         
 		$this->getHeaders();
-        $this->getIpAddress();
+        //$this->getIpAddress();
         $this->getCurrency();
         $this->getLocale();
+        $this->getFramework();
+        $this->getCustomer();
 		
         if($route == 'frontend.home.page') {
 			$this->appendHomeJS($route);
@@ -160,11 +177,31 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 
 	private function appendProductJS($route) {
 		
-        $current_product = $this->getVariables($route)['page']->getProduct();
+
+        try{
+            $page = $this->getVariables($route)['page'];
+            if($page==null){
+                return;
+            }
+            if(get_class_methods($page)==null){
+                return;
+            }
+            if(in_array("getProduct",get_class_methods($page))){
+                $current_product = $page->getProduct();
+            }
+            else{
+                return;
+            }
+        }
+        catch (\Exception $e){
+            return;
+        }
         $image = "";
-        if($current_product->getMedia() != null){
+        if($current_product->getMedia() != null && $current_product->getMedia()->first() != null ){
             $image = $current_product->getMedia()->first()->getMedia()->getUrl();
         }
+
+        //TODO fix special price and breadcrumbs and qty
 		$this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
@@ -175,7 +212,25 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 	}
 	
 	private function appendProductCategoryJS($route) {
-        $navigationId = $this->getVariables($route)['page']->getNavigationId();
+
+        try{
+            $page = $this->getVariables($route)['page'];
+            if($page==null){
+                return;
+            }
+            if(get_class_methods($page)==null){
+                return;
+            }
+            if(in_array("getNavigationId",get_class_methods($page))){
+                $navigationId = $page->getNavigationId();
+            }
+            else{
+                return;
+            }
+        }
+        catch (\Exception $e){
+            return;
+        }
         $current_category = $this->cmsPageRoute
             ->load($navigationId, $this->requestStack->getCurrentRequest(), $this->getSalesChannelContext())
             ->getCategory();
@@ -218,7 +273,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 		$this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
-                     sirioCustomObject.categoryDetails = {"name":"'.$current_category->getName().'","image":"'.$image.'","description":"'.$this->cleanTextCategory($current_category->getDescription()).'"};
+                     sirioCustomObject.categoryDetails = {"id":"'.$current_category->getId().'","name":"'.$current_category->getName().'","image":"'.$image.'","description":"'.$this->cleanTextCategory($current_category->getDescription()).'"};
                      sirioCustomObject.pageType = "category";
                      sirioCustomObject.numProducts = '.$products_count.';
                      sirioCustomObject.pages = '.$pages.';
@@ -409,7 +464,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
             setcookie('sirio_cart', base64_encode($cart_full), time() + (86400 * 30), "/");
 			
 		} catch (\Exception $exception) {
-            throw new Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage());
 		}
 		return;
 	}
@@ -502,10 +557,31 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 
     
     protected function getLocale(){
-        $salesChannelContext = $this->getSalesChannelContext();
         $locale = $this->localeProvider->getLocaleFromContext($this->getSalesChannelContext()->getContext());
         $locale = strstr($locale, '-', true);
         $this->script.='sirioCustomObject.locale = \''.$locale.'\';';
+    }
+
+    protected function getFramework(){
+        $this->script.='sirioCustomObject.framework = \''.$this->framework.'\';';
+        $this->script.='sirioCustomObject.frameworkVersion = \''.$this->framework_version.'\';';
+        if($this->modules->getDebugMode()){
+            $this->script.='sirioCustomObject.debugMode = \''.($this->modules->getDebugMode()?"1":"0").'\';';
+        }
+
+    }
+
+    protected function getCustomer(){
+        $customerData=array();
+        $customer = $this->getSalesChannelContext()->getCustomer();
+
+        if(null !== $customer){
+            $customerData['customer_id']=$customer->getId();
+        }
+        if(!empty($customerData)){
+            $this->script.='sirioCustomObject.customer= \''.json_encode($customerData).'\';';
+        }
+
     }
 
 

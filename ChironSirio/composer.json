@@ -12,8 +12,8 @@
         }
     ],
     "require": {
-        "shopware/core": "~6.4",
-        "shopware/administration": "~6.4"
+        "shopware/core": ">=6.4",
+        "shopware/administration": ">=6.4"
     },
     "autoload": {
         "psr-4": {

@@ -3,7 +3,7 @@
 {% block base_body_script %}
     {% block chiron_layout_body_sirio_snippet %}   
         <!-- ChironSirio Head Snippet Start -->
-        {% if chironSirioConfig.isActive %}<script async src="{{ chironSirioConfig.sirioUrl }}/api/v1/profiling" async type="text/javascript"></script>{% endif %}
+        {% if chironSirioConfig.isActive %}<script src="{{ chironSirioConfig.sirioUrl }}/api/v1/profiling" async type="text/javascript"></script>{% endif %}
         <!-- ChironSirio Head Snippet End -->
 
     {% endblock %}
