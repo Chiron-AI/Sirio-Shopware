@@ -289,8 +289,23 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $max_product_count = 0;
         //
         $pageCms = $this->getVariables($route)['page'];
-        $max_product_count = $pageCms->getListing()->getTotal();
-        $limit = $pageCms->getListing()->getLimit();
+        try{
+            $max_product_count = $pageCms->getListing()->getTotal();
+            $limit = $pageCms->getListing()->getLimit();
+        }
+        catch (\Exception $e){
+            $pageCms = $pageCms->getCmsPage();
+            foreach($pageCms->getSections()->getElements() as $element){
+                foreach($element->getBlocks()->getElements() as $elementNested){
+                    if($elementNested->getType()=='product-listing'){
+                        foreach($elementNested->getSlots() as $elementSlot){
+                            $max_product_count = $elementSlot->getData()->getListing()->getTotal();
+                            $limit = $elementSlot->getData()->getListing()->getLimit();
+                        }
+                    }
+                }
+            }
+        }
 
         if ($pageCms->getSearchTerm()) {//getSearchTerm
 			$this->script.='sirioCustomObject.query = "' . $pageCms->getSearchTerm() . '";';
