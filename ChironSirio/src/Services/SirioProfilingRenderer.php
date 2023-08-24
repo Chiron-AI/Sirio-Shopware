@@ -489,12 +489,12 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                 }
 
                 $cart_full = '{"order_id":"'.$orderId.'","action_type":"'.$this->getActionType($eventName).'","cart_total":'.$total.',"cart_subtotal":'.$subtotal.',"shipping":'.$shipping.',"coupon_code":"'.$coupon.'","discount_amount":'.$discount.',"cart_products":'.json_encode($products).'}';
-                setcookie('sirio_cart', $cart_full, time() + (86400 * 30), "/");
+                setcookie('sirio_cart', base64_encode($cart_full), time() + (86400 * 30), "/");
                 return base64_encode($cart_full);
             }
             else if(!empty($orderId)){
                 $cart_full = '{"order_id":"'.$orderId.'"}';
-                setcookie('sirio_cart', $cart_full, time() + (86400 * 30), "/");
+                setcookie('sirio_cart', base64_encode($cart_full), time() + (86400 * 30), "/");
                 return base64_encode($cart_full);
             }
             if(isset($_COOKIE['sirio_cart'])){
