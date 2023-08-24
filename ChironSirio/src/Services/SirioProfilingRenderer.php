@@ -20,6 +20,7 @@ use Shopware\Core\System\SalesChannel\Context\SalesChannelContextServiceInterfac
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Shopware\Core\Framework\Store\Authentication\LocaleProvider;
+use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPage;
 
 class SirioProfilingRenderer implements SirioProfilingRendererInterface
 {
@@ -39,6 +40,8 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
      * @var array
      */
     private $variables = [];
+
+    private $page;
 
     /**
      * @var SalesChannelContextServiceInterface
@@ -106,6 +109,9 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 
     public function getVariables(string $route): array
     {
+        if(!isset($this->variables[$route])){
+            $this->variables[$route] = [];
+        }
         return $this->variables[$route];
     }
 
@@ -164,19 +170,19 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                      '.$this->script.'
                      //]]>
                  </script>';
-	}
+    }
 
     private function appendHomeJS($route) {
-		$this->sirioProfiling[$route] = '<script type="text/javascript">
+        $this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.pageType = "home";
                      //]]>
                  </script>';
-	}
+    }
 
-	private function appendProductJS($route) {
-		
+    private function appendProductJS($route) {
+
 
         try{
             $page = $this->getVariables($route)['page'];
@@ -201,17 +207,18 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
             $image = $current_product->getMedia()->first()->getMedia()->getUrl();
         }
 
-        //TODO fix special price and breadcrumbs and qty
-		$this->sirioProfiling[$route] = '<script type="text/javascript">
+        $breadcrumbs=null;
+        //TODO fix special price and breadcrumbs
+        $this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
-                     sirioCustomObject.productDetails = {"sku":"'.$current_product->getProductNumber().'","name":"'.$current_product->getName().'","image":"'.$image.'","description":"'.$this->cleanTextProduct($current_product->getDescription()).'","price":"'.$current_product->getPrice()->first()->getGross().'","special_price":"'.$current_product->getPrice()->first()->getGross().'"};
+                     sirioCustomObject.productDetails = {"sku":"'.$current_product->getProductNumber().'","name":"'.$current_product->getName().'","image":"'.$image.'","description":"'.$this->cleanTextProduct($current_product->getDescription()).'","qty":"'.$current_product->getAvailableStock().'","breadcrumbs":"' . addslashes(stripslashes(json_encode(array($breadcrumbs)))) . '","price":"'.$current_product->getPrice()->first()->getGross().'","special_price":"'.$current_product->getPrice()->first()->getGross().'"};
                      sirioCustomObject.pageType = "product";
                      //]]>
                  </script>';
-	}
-	
-	private function appendProductCategoryJS($route) {
+    }
+
+    private function appendProductCategoryJS($route) {
 
         try{
             $page = $this->getVariables($route)['page'];
@@ -237,10 +244,10 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $image = "";
         if($current_category->getMedia() != null){
             $image = $current_category->getMedia()->getUrl();
-        }    
-		$limit = 24;//
-		$page = $this->getParam('p')?$this->getParam('p'):1;
-		$products_count = $limit;
+        }
+        $limit = 24;//
+        $page = $this->getParam('p')?$this->getParam('p'):1;
+        $products_count = $limit;
         $max_product_count = 0;
         //
         $pageCms = $this->getVariables($route)['page']->getCmsPage();
@@ -253,24 +260,24 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                         $max_product_count = $elementSlot->getData()->getListing()->getTotal();
                         $limit = $elementSlot->getData()->getListing()->getLimit();
                     }
-                    
+
                 }
-                
+
             }
-            
+
         }
-		
-		if($max_product_count % $limit > 0){
-			$pages = (int)($max_product_count / $limit) + 1 ;
-		}
-		else{
-			$pages = $max_product_count / $limit ;
-		}
-		if($page == $pages){
-			$products_count = $max_product_count % $limit;
-		}
-		
-		$this->sirioProfiling[$route] = '<script type="text/javascript">
+
+        if($max_product_count % $limit > 0){
+            $pages = (int)($max_product_count / $limit) + 1 ;
+        }
+        else{
+            $pages = $max_product_count / $limit ;
+        }
+        if($page == $pages){
+            $products_count = $max_product_count % $limit;
+        }
+
+        $this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.categoryDetails = {"id":"'.$current_category->getId().'","name":"'.$current_category->getName().'","image":"'.$image.'","description":"'.$this->cleanTextCategory($current_category->getDescription()).'"};
@@ -280,12 +287,12 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                      sirioCustomObject.currentPage = '.$page.';
                      //]]>
                  </script>';
-	}
-	
-	private function appendProductSearchJS($route) {
-		$limit = 24;//
-		$page = $this->getParam('p')?$this->getParam('p'):1;
-		$products_count = $limit;
+    }
+
+    private function appendProductSearchJS($route) {
+        $limit = 24;//
+        $page = $this->getParam('p')?$this->getParam('p'):1;
+        $products_count = $limit;
         $max_product_count = 0;
         //
         $pageCms = $this->getVariables($route)['page'];
@@ -307,21 +314,23 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
             }
         }
 
+
+
         if ($pageCms->getSearchTerm()) {//getSearchTerm
-			$this->script.='sirioCustomObject.query = "' . $pageCms->getSearchTerm() . '";';
-		}
+            $this->script.='sirioCustomObject.query = "' . $pageCms->getSearchTerm() . '";';
+        }
 
         if($max_product_count % $limit > 0){
-			$pages = (int)($max_product_count / $limit) + 1 ;
-		}
-		else{
-			$pages = $max_product_count / $limit ;
-		}
-		if($page == $pages){
-			$products_count = $max_product_count % $limit;
-		}
+            $pages = (int)($max_product_count / $limit) + 1 ;
+        }
+        else{
+            $pages = $max_product_count / $limit ;
+        }
+        if($page == $pages){
+            $products_count = $max_product_count % $limit;
+        }
 
-		$this->sirioProfiling[$route] = '<script type="text/javascript">
+        $this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.pageType = "search";
@@ -330,49 +339,52 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                      sirioCustomObject.currentPage = '.$page.';
                      //]]>
                  </script>';
-	}
-	
-	
-	private function appendCheckoutJS($route) {
-		
+    }
+
+
+    private function appendCheckoutJS($route) {
+
         $this->setSirioCart($route);
-		$this->sirioProfiling[$route] = '<script type="text/javascript">
+        $this->sirioProfiling[$route] = '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.pageType = "checkout";
                      //]]>
                  </script>';
-	}
-	
-	private function appendCheckoutSuccessJS($route) {
-		if(isset($_COOKIE['sirio_cart'])){
-			unset($_COOKIE['sirio_cart']);
-		}
-		$this->sirioProfiling[$route] =  '<script type="text/javascript">
+    }
+
+    private function appendCheckoutSuccessJS($route) {
+        $this->setSirioCart($route);
+        $this->sirioProfiling[$route] =  '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.pageType = "checkout_success";
                      //]]>
                  </script>';
-	}
-	
-	private function appendCheckoutFailureJS($route) {
-		if(isset($_COOKIE['sirio_cart'])){
-			setcookie('sirio_cart', "", 1);
-		}
-		$this->sirioProfiling[$route] =  '<script type="text/javascript">
+        if(isset($_COOKIE['sirio_cart'])){
+            unset($_COOKIE['sirio_cart']);
+        }
+
+    }
+
+    private function appendCheckoutFailureJS($route) {
+        if(isset($_COOKIE['sirio_cart'])){
+            setcookie('sirio_cart', "", 1);
+        }
+        $this->sirioProfiling[$route] =  '<script type="text/javascript">
                      //<![CDATA[
                      '.$this->script.'
                      sirioCustomObject.pageType = "checkout_failure";
                      //]]>
                  </script>';
-	}
+    }
 
-  
+
     protected function getCart()
     {
         $salesChannelContext = $this->getSalesChannelContext();
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+
         return $cart;
     }
 
@@ -394,8 +406,8 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
             if(isset($item->getPayload()['code'])){
                 $discountCodes[]=$item->getPayload()['code'];
             }
-                
-            
+
+
         }
         foreach ($cart->getLineItems()->filterType(LineItem::PRODUCT_LINE_ITEM_TYPE)->getFlat() as $item) {
             if (
@@ -420,69 +432,83 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                 "product_options" => $item->getPayload()['options'],
                 "qty"=>$item->getQuantity(),
                 "name"=>$item->getLabel(),
-                
+
             ];
             $itemArray[] = $data;
- 
+
         }
         return $itemArray;
     }
 
     /**
-	 * @return array
-	 * @throws \Magento\Framework\Exception\LocalizedException
-	 */
-	public function setSirioCart($eventName) {
-		
-		try {
-			
-			$cart = $this->getCart();
-			$itemArray = $this->makeItemArray($cart);
-            
-            $discountCodes=[];
-            foreach ($cart->getLineItems()->filterType(LineItem::PROMOTION_LINE_ITEM_TYPE)->getFlat() as $item) {
-                if(isset($item->getPayload()['code'])){
-                    $discountCodes[]=$item->getPayload()['code'];
-                }
+     * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function setSirioCart($eventName) {
+
+        try {
+
+            $cart = $this->getCart();
+            $orderId="";
+
+            //Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPage
+            if(!empty($this->getVariables($eventName)['page']) && method_exists($this->getVariables($eventName)['page'],"getOrder")){
+                $order = $this->getVariables($eventName)['page']->getOrder();
+                $orderId = $order->getOrderNumber();
             }
-            $coupon = implode(",", $discountCodes);
-			$shipping = $cart->getShippingCosts()->getTotalPrice();
-            $total = $cart->getPrice()->getTotalPrice();
-            
-			/*
-					quando questa funzione viene chiamata:
-					metto in sirio_cart il carrello attuale
-			*/
-			$products = array();
-            $subtotal = $discount = 0.0;
-			foreach($itemArray as $item){
-				
-				$products[] = array(
-					"item_id"=>$item['item_id'],
-					"sku"=>$item['sku'] ,
-					"product_options"=>$item['product_options'],
-					"price"=>$item['price'],
-					"qty"=>$item['qty'],
-					"name"=>$item['name'],
-					"discount_amount"=>round(($item['price_original']-$item['price']),2)
-				);
-                $subtotal+=round($item['price_original']*$item['qty'],2);
-                $discount+=round(($item['price_original']-$item['price'])*$item['qty'],2);
-			}
 
-            
+            if($cart->getLineItems()->count() > 0){
 
-			$cart_full = '{"action_type":"'.$this->getActionType($eventName).'","cart_total":'.$total.',"cart_subtotal":'.$subtotal.',"shipping":'.$shipping.',"coupon_code":"'.$coupon.'","discount_amount":'.$discount.',"cart_products":'.json_encode($products).'}';
-			if(isset($_COOKIE['sirio_cart'])){
-				setcookie('sirio_cart', "", 1);
-			}
-            setcookie('sirio_cart', base64_encode($cart_full), time() + (86400 * 30), "/");
-			
-		} catch (\Exception $exception) {
+                $itemArray = $this->makeItemArray($cart);
+
+                $discountCodes=[];
+                foreach ($cart->getLineItems()->filterType(LineItem::PROMOTION_LINE_ITEM_TYPE)->getFlat() as $item) {
+                    if(isset($item->getPayload()['code'])){
+                        $discountCodes[]=$item->getPayload()['code'];
+                    }
+                }
+                $coupon = implode(",", $discountCodes);
+                $shipping = $cart->getShippingCosts()->getTotalPrice();
+                $total = $cart->getPrice()->getTotalPrice();
+
+                $products = array();
+                $subtotal = $discount = 0.0;
+                foreach($itemArray as $item){
+
+                    $products[] = array(
+                        "item_id"=>$item['item_id'],
+                        "sku"=>$item['sku'] ,
+                        "product_options"=>$item['product_options'],
+                        "price"=>$item['price'],
+                        "qty"=>$item['qty'],
+                        "name"=>$item['name'],
+                        "discount_amount"=>round(($item['price_original']-$item['price']),2)
+                    );
+                    $subtotal+=round($item['price_original']*$item['qty'],2);
+                    $discount+=round(($item['price_original']-$item['price'])*$item['qty'],2);
+                }
+
+                $cart_full = '{"order_id":"'.$orderId.'","action_type":"'.$this->getActionType($eventName).'","cart_total":'.$total.',"cart_subtotal":'.$subtotal.',"shipping":'.$shipping.',"coupon_code":"'.$coupon.'","discount_amount":'.$discount.',"cart_products":'.json_encode($products).'}';
+                setcookie('sirio_cart', $cart_full, time() + (86400 * 30), "/");
+                return base64_encode($cart_full);
+            }
+            else if(!empty($orderId)){
+                $cart_full = '{"order_id":"'.$orderId.'"}';
+                setcookie('sirio_cart', $cart_full, time() + (86400 * 30), "/");
+                return base64_encode($cart_full);
+            }
+            if(isset($_COOKIE['sirio_cart'])){
+                setcookie('sirio_cart', "", 1);
+            }
+
+
+
+
+        } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
-		}
-		return;
-	}
+        }
+        return;
+    }
 
     protected function getActionType($eventName){
         $actionType = "";
@@ -501,14 +527,18 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
                 break;
             case "frontend.checkout.cart.page":
                 $actionType = "viewcart";
-                break;    
+                break;
+            case "frontend.checkout.info":
+                $actionType = "viewcart";
+                break;
             /*case "":
                 $actionType = "changeqty";
                 break;  */
             /*case "":
                 $actionType = "applycoupon";
-                break; */       
+                break; */
             default:
+                //$actionType = $eventName;
                 break;
         }
 
@@ -520,39 +550,39 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         return $actionType;
     }
 
-    
-	protected function getHeaders(){
-		$header_request = getallheaders();
-		$header_response = headers_list();
-		$header_response_status_code = http_response_code();
-		
-		$header_response_filtered = array();
-		
-		foreach ($header_response as $response) {
-			$explode_pos = strpos($response,':');
-			$key = substr($response, 0, $explode_pos);
-			if($key !== 'Link'){
-				$value = substr($response, $explode_pos);
-				$header_response_filtered[] = array($key, $value);
-			}
-		}
-		
-		$headers = array(
-			'request'=>array(
-				'Accept-Encoding'=>isset($header_request['Accept-Encoding'])?$header_request['Accept-Encoding']:"",
-				'Accept-Language'=>isset($header_request['Accept-Encoding'])?$header_request['Accept-Language']:"",
-				'Cookie'=>isset($header_request['Cookie'])?$header_request['Cookie']:""
-			),
-			'response'=>array(
-				$header_response_filtered,
-				'status_code'=>$header_response_status_code
-			)
-		);
-		
-		$this->script .= 'sirioCustomObject.headers = '.json_encode($headers).';';
-		
-		
-	}
+
+    protected function getHeaders(){
+        $header_request = getallheaders();
+        $header_response = headers_list();
+        $header_response_status_code = http_response_code();
+
+        $header_response_filtered = array();
+
+        foreach ($header_response as $response) {
+            $explode_pos = strpos($response,':');
+            $key = substr($response, 0, $explode_pos);
+            if($key !== 'Link'){
+                $value = substr($response, $explode_pos);
+                $header_response_filtered[] = array($key, $value);
+            }
+        }
+
+        $headers = array(
+            'request'=>array(
+                'Accept-Encoding'=>isset($header_request['Accept-Encoding'])?$header_request['Accept-Encoding']:"",
+                'Accept-Language'=>isset($header_request['Accept-Encoding'])?$header_request['Accept-Language']:"",
+                'Cookie'=>isset($header_request['Cookie'])?$header_request['Cookie']:""
+            ),
+            'response'=>array(
+                $header_response_filtered,
+                'status_code'=>$header_response_status_code
+            )
+        );
+
+        $this->script .= 'sirioCustomObject.headers = '.json_encode($headers).';';
+
+
+    }
 
     protected function getIpAddress(){
         $ip = isset($_SERVER['HTTP_CLIENT_IP'])
@@ -570,7 +600,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $this->script.='sirioCustomObject.currency = \''.$salesChannelContext->getCurrency()->getIsoCode().'\';';
     }
 
-    
+
     protected function getLocale(){
         $locale = $this->localeProvider->getLocaleFromContext($this->getSalesChannelContext()->getContext());
         $locale = strstr($locale, '-', true);
@@ -613,7 +643,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 
     protected function cleanTextProduct($string){
         if(!$string){
-            return $string; 
+            return $string;
         }
         return  preg_replace('/\R/', '',
             str_replace("<br/>","",
@@ -627,7 +657,7 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
 
     protected function cleanTextCategory($string){
         if(!$string){
-            return $string; 
+            return $string;
         }
         return  preg_replace('/\R/', '',
             str_replace("<br/>","",
@@ -671,5 +701,5 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         return $this->twigContext;
     }
 
-    
+
 }
