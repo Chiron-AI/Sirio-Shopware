@@ -16,6 +16,15 @@
             <label lang="de-DE">Sirio Aktivieren</label>
             <label lang="nl-NL">Sirio Inschakelen</label>
         </input-field>
+        <input-field type="text">
+            <name>apiKey</name>
+            <label>Api Key</label>
+            <label lang="it-IT">Api Key</label>
+            <label lang="en-GB">Api Key</label>
+            <label lang="de-DE">Api Key</label>
+            <label lang="nl-NL">Api Key</label>
+            <placeholder>stc_45tK0wYwQWvUIfURoqY5dk8G5Wl6B8bGtitTc4vO11A</placeholder>
+        </input-field>
         <input-field type="bool">
             <name>debugEnable</name>
             <label>Enable Debug</label>

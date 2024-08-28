@@ -23,8 +23,8 @@ class SirioProfilingModules implements SirioProfilingModulesInterface
     private $modules;
 
 
-    const SIRIO_URL_STAGE = "api.sirio-stage.chiron.ai";
-    const SIRIO_URL_PRODUCTION = "api.sirio.chiron.ai";
+    const SIRIO_URL_STAGE = "localhost";
+    const SIRIO_URL_PRODUCTION = "media.sirio.chiron.ai";
 
     public function __construct(
         Connection $connection,
@@ -57,6 +57,14 @@ class SirioProfilingModules implements SirioProfilingModulesInterface
     public function getSirioUrl(?string $salesChannelId = null){
         return "https://".($this->getDevMode($salesChannelId)?self::SIRIO_URL_STAGE:self::SIRIO_URL_PRODUCTION);
     }
+
+    public function getSirioApiKey(?string $salesChannelId = null){
+        return $this->systemConfigService->get(
+            'ChironSirio.config.apiKey',
+            $salesChannelId
+        );
+    }
+
 
     public function getDevMode(?string $salesChannelId = null){
         return $this->systemConfigService->get(

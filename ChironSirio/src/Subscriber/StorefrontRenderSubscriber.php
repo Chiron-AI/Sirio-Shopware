@@ -49,6 +49,7 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
         $isActive = $this->modules->isActive($salesChannelId);
         $route = $event->getRequest()->attributes->get('_route');
 
+
         if($route == null){
             return;
         }
@@ -62,7 +63,7 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
         } else {
             $parameters = $event->getParameters();
 
-            $sirioProfiling = $this->sirioProfilingRenderer->setVariables($route, $parameters)->renderSirioProfiling($route);  
+            $sirioProfiling = $this->sirioProfilingRenderer->setVariables($route, $parameters)->renderSirioProfiling($route);
             $sirioProfiling = $sirioProfiling->getSirioProfiling($route);
         }
         
@@ -71,6 +72,7 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
                 'chironSirioConfig',
                 [   
                     'sirioUrl' => $this->modules->getSirioUrl($salesChannelId),
+                    'sirioApiKey' => $this->modules->getSirioApiKey($salesChannelId),
                     'isActive' => $isActive
                 ]
             );

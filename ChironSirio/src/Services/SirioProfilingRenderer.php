@@ -130,7 +130,6 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
     public function getSirioEvent($route) {
         
 		$this->getHeaders();
-        //$this->getIpAddress();
         $this->getCurrency();
         $this->getLocale();
         $this->getFramework();
@@ -582,16 +581,6 @@ class SirioProfilingRenderer implements SirioProfilingRendererInterface
         $this->script .= 'sirioCustomObject.headers = '.json_encode($headers).';';
 
 
-    }
-
-    protected function getIpAddress(){
-        $ip = isset($_SERVER['HTTP_CLIENT_IP'])
-            ? $_SERVER['HTTP_CLIENT_IP']
-            : (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-                ? $_SERVER['HTTP_X_FORWARDED_FOR']
-                : $_SERVER['REMOTE_ADDR']);
-
-        $this->script.='sirioCustomObject.ip = \''.$ip.'\';';
     }
 
 

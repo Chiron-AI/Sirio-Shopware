@@ -1,6 +1,6 @@
 {
     "name": "chiron/chiron-sirio",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Chiron Sirio",
     "keywords": ["shopware6", "shopware-6", "anomalies", "tracking", "shopware-plugin"],
     "type": "shopware-platform-plugin",
@@ -41,10 +41,10 @@
             "nl-NL": "Sirio is een geavanceerd monitoringsysteem dat ideaal is voor e-commerce, met plannen die kunnen worden aangepast aan het aantal bezoekers van de site. Sirio ontvangt in realtime een grote hoeveelheid gegevens en analyseert het gedrag van de klant binnen de website, waarbij alle interacties worden getraceerd om eventuele afwijkingen in de trechter te vinden."
         },
         "manufacturerLink": {
-            "de-DE": "https://chiron.ai",
-            "en-GB": "https://chiron.ai",
+            "de-DE": "https://chiron.ai/en",
+            "en-GB": "https://chiron.ai/en",
             "it-IT": "https://chiron.ai",
-            "nl-NL": "https://chiron.ai"
+            "nl-NL": "https://chiron.ai/en"
         },
         "supportLink": {
             "de-DE": "https://sirio.chiron.ai/en/",
